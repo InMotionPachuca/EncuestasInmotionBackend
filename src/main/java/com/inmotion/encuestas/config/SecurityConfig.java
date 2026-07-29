@@ -52,7 +52,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200", "https://encuestas-app.vercel.app"));
+        
+        // Se agrega la URL del frontend desplegado en Render
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:4200", 
+            "https://encuestasinmotionfrontend.onrender.com"
+        ));
+        
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);

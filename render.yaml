@@ -1,7 +1,9 @@
 services:
   - type: web
     name: inmotion-backend
-    env: java
+    runtime: image
+    image:
+      url: render/java:17
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     envVars:

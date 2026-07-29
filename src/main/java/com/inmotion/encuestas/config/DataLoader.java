@@ -16,15 +16,25 @@ public class DataLoader implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        if (!usuarioRepository.existsByEmail("admin@inmotion.com")) {
-            Usuario admin = new Usuario();
-            admin.setEmail("admin@inmotion.com");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setNombre("Administrador");
-            admin.setRol("ADMIN");
-            admin.setActivo(true);
-            usuarioRepository.save(admin);
-            System.out.println("✅ Usuario admin creado: admin@inmotion.com / admin123");
+        // Registro del usuario administrador con tu correo
+        crearUsuarioSiNoExiste("oolguin@toyotapachuca.com.mx", "admin123", "Omar Olguín", "ADMIN");
+        
+        // Usuarios institucionales adicionales
+        crearUsuarioSiNoExiste("admin@inmotion.com", "admin123", "Administrador InMotion", "ADMIN");
+        crearUsuarioSiNoExiste("gerencia@inmotion.com", "gerencia123", "Gerencia General", "GERENTE");
+        crearUsuarioSiNoExiste("operaciones@inmotion.com", "operaciones123", "Atención a Clientes", "USER");
+    }
+
+    private void crearUsuarioSiNoExiste(String email, String password, String nombre, String rol) {
+        if (!usuarioRepository.existsByEmail(email)) {
+            Usuario u = new Usuario();
+            u.setEmail(email);
+            u.setPassword(passwordEncoder.encode(password));
+            u.setNombre(nombre);
+            u.setRol(rol);
+            u.setActivo(true);
+            usuarioRepository.save(u);
+            System.out.println("Usuario institucional registrado: " + email);
         }
     }
 }

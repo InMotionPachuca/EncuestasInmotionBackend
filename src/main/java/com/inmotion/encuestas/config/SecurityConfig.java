@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/encuestas/eliminar/**").permitAll()
                         .requestMatchers("/api/encuestas/responder/**").permitAll()
                         .requestMatchers("/api/encuestas/token/**").permitAll()
+                        .requestMatchers("/api/usuarios/cambiar-password").permitAll()
                         .requestMatchers("/api/encuestas/estadisticas/**").permitAll()
                         .requestMatchers("/ping").permitAll()
                         .requestMatchers("/").permitAll()

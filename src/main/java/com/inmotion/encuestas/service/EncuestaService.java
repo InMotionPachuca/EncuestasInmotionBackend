@@ -31,16 +31,46 @@ public class EncuestaService {
         
         Encuesta encuesta = new Encuesta();
         encuesta.setToken(tokenGenerator.generarToken());
-        encuesta.setTipo(request.getTipo() != null ? request.getTipo() : "SERVICIO");
-        encuesta.setEstado(Encuesta.EstadoEncuesta.ENVIADA);
-        encuesta.setFechaEnvio(LocalDateTime.now());
-        encuesta.setFechaExpiracion(LocalDateTime.now().plusDays(7));
+        
+        String tipo = request.getTipo() != null ? request.getTipo() : "SERVICIO";
+        encuesta.setTipo(tipo);
+        
+        // Si la encuesta es de tipo QR, nace como RESPONDIDA inmediatamente
+        if ("QR".equalsIgnoreCase(tipo)) {
+            encuesta.setEstado(Encuesta.EstadoEncuesta.RESPONDIDA);
+            encuesta.setFechaEnvio(LocalDateTime.now());
+            encuesta.setFechaRespuesta(LocalDateTime.now());
+        } else {
+            encuesta.setEstado(Encuesta.EstadoEncuesta.ENVIADA);
+            encuesta.setFechaEnvio(LocalDateTime.now());
+            encuesta.setFechaExpiracion(LocalDateTime.now().plusDays(7));
+        }
+
         encuesta.setClienteNombre(request.getNombre() + " " + request.getApellido());
         encuesta.setClienteEmail(request.getEmail());
         encuesta.setClienteTelefono(request.getTelefono());
         encuesta.setAsesor(request.getAsesor());
         encuesta.setSerie(request.getSerie());
         encuesta.setMarca(marca);
+
+        // --- CORRECCIÓN CRÍTICA: Mapear y guardar respuestas cuando vienen en el request (Caso QR) ---
+        if (request.getRespuestas() != null && !request.getRespuestas().isEmpty()) {
+            for (RespuestaRequestDTO r : request.getRespuestas()) {
+                Respuesta respuesta = new Respuesta();
+                respuesta.setPreguntaId(r.getPreguntaId());
+                respuesta.setValorTexto(r.getValorTexto());
+                respuesta.setValorNumerico(r.getValorNumerico());
+                respuesta.setOpcionId(r.getOpcionId());
+                
+                if (r.getOpcionId() != null) {
+                    respuesta.setOpcionTexto(r.getOpcionId() == 1 ? "SI" : "NO");
+                }
+                
+                respuesta.setPreguntaTexto(getPreguntaTexto(r.getPreguntaId()));
+                respuesta.setEncuesta(encuesta);
+                encuesta.getRespuestas().add(respuesta);
+            }
+        }
         
         Encuesta saved = encuestaRepository.save(encuesta);
         return mapToResponseDTO(saved);
@@ -69,6 +99,11 @@ public class EncuestaService {
             respuesta.setValorTexto(r.getValorTexto());
             respuesta.setValorNumerico(r.getValorNumerico());
             respuesta.setOpcionId(r.getOpcionId());
+            
+            if (r.getOpcionId() != null) {
+                respuesta.setOpcionTexto(r.getOpcionId() == 1 ? "SI" : "NO");
+            }
+            
             respuesta.setPreguntaTexto(getPreguntaTexto(r.getPreguntaId()));
             respuesta.setEncuesta(encuesta);
             encuesta.getRespuestas().add(respuesta);
@@ -83,6 +118,12 @@ public class EncuestaService {
     
     public List<EncuestaResponseDTO> listarEncuestas() {
         return encuestaRepository.findAll().stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<EncuestaResponseDTO> listarEncuestasPorTipo(String tipo) {
+        return encuestaRepository.findByTipoOrderByIdDesc(tipo).stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -149,7 +190,7 @@ public class EncuestaService {
     }
     
     private double obtenerPromedioRecomendacion() {
-        List<Object[]> resultados = respuestaRepository.countOpcionesByPreguntaId(4);
+        List<Object[]> resultados = respuestaRepository.countOpcionesByPreguntaId(5);
         long si = 0, no = 0;
         for (Object[] row : resultados) {
             if (row[0] != null) {
@@ -166,11 +207,12 @@ public class EncuestaService {
     
     private String getPreguntaTexto(Integer preguntaId) {
         switch (preguntaId) {
-            case 1: return "Nombre completo";
-            case 2: return "Experiencia con la agencia";
-            case 3: return "Experiencia con el asesor";
-            case 4: return "Recomendación";
-            case 5: return "Sugerencia de mejora";
+            case 1: return "Nombre Completo del Cliente";
+            case 2: return "Experiencia general con la agencia";
+            case 3: return "Atención amable y profesional";
+            case 4: return "Tiempo de atención adecuado";
+            case 5: return "Recomendación a familiares y amigos";
+            case 6: return "Sugerencias de mejora";
             default: return "Pregunta " + preguntaId;
         }
     }

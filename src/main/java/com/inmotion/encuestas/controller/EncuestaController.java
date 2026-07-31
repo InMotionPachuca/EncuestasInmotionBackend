@@ -37,6 +37,11 @@ public class EncuestaController {
     public ResponseEntity<List<EncuestaResponseDTO>> listarEncuestas() {
         return ResponseEntity.ok(encuestaService.listarEncuestas());
     }
+
+    @GetMapping("/listar/qr")
+    public ResponseEntity<List<EncuestaResponseDTO>> listarEncuestasQR() {
+        return ResponseEntity.ok(encuestaService.listarEncuestasPorTipo("QR"));
+    }
     
     @GetMapping("/token/{token}")
     public ResponseEntity<EncuestaResponseDTO> obtenerEncuestaPorToken(@PathVariable String token) {

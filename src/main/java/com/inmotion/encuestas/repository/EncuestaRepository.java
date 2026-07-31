@@ -20,6 +20,9 @@ public interface EncuestaRepository extends JpaRepository<Encuesta, Long> {
     
     List<Encuesta> findByMarca(Marca marca);
     
+    // Método nuevo para listar según el tipo ('QR' o 'SERVICIO')
+    List<Encuesta> findByTipoOrderByIdDesc(String tipo);
+    
     @Query("SELECT e FROM Encuesta e WHERE e.estado = 'ENVIADA' AND e.fechaExpiracion < :fecha")
     List<Encuesta> findExpiradas(@Param("fecha") LocalDateTime fecha);
     

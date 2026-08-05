@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/encuestas/estadisticas/**").permitAll()
                         .requestMatchers("/ping").permitAll()
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

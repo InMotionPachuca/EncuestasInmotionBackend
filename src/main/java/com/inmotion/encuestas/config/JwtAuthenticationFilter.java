@@ -30,12 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Ignorar rutas públicas
         String path = request.getServletPath();
         if (path.startsWith("/api/auth/login") || 
-        	path.startsWith("/api/encuestas/crear") ||	
-        	path.startsWith("/api/encuestas/eliminar/") ||
+            path.startsWith("/api/encuestas/crear") ||	
+            path.startsWith("/api/encuestas/eliminar/") ||
             path.startsWith("/api/encuestas/responder/") || 
             path.startsWith("/api/encuestas/token/") ||
             path.equals("/ping") ||
-            path.equals("/")) {
+            path.equals("/") ||
+            path.equals("/health")) {  
             filterChain.doFilter(request, response);
             return;
         }

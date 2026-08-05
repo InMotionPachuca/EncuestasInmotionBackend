@@ -1,0 +1,5 @@
+package com.inmotion.encuestas.controller;
+
+public class UsuarioController {
+
+}

@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: encuestas-backend
+    runtime: image
+    repo: https://github.com/tu-usuario/encuestas-backend
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: encuestas-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: encuestas-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: encuestas-db
+          property: password
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: JWT_SECRET
+        value: inmotion-secret-key-2024-encuestas-app
+      - key: CORS_ORIGINS
+        value: https://encuestas-app.vercel.app,http://localhost:4200
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/encuestas-backend-*.jar
+
+databases:
+  - name: encuestas-db
+    databaseName: encuestas_db
+    user: encuestas_user
+    plan: free

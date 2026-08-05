@@ -1,0 +1,5 @@
+package com.inmotion.encuestas.dto;
+
+public class AuthResponseDTO {
+
+}

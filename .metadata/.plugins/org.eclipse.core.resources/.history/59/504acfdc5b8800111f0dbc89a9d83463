@@ -1,0 +1,5 @@
+package com.inmotion.encuestas.service;
+
+public class MarcaService {
+
+}

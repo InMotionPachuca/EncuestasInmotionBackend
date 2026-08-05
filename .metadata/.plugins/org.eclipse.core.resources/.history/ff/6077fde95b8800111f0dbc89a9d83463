@@ -1,0 +1,5 @@
+package com.inmotion.encuestas.util;
+
+public class TokenGenerator {
+
+}

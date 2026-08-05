@@ -1,0 +1,40 @@
+package com.inmotion.encuestas.config;
+
+import com.inmotion.encuestas.model.Usuario;
+import com.inmotion.encuestas.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class DataLoader implements CommandLineRunner {
+    
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    
+    @Override
+    public void run(String... args) throws Exception {
+        // Registro del usuario administrador con tu correo
+        crearUsuarioSiNoExiste("oolguin@toyotapachuca.com.mx", "admin123", "Omar Olguín", "ADMIN");
+        
+        // Usuarios institucionales adicionales
+        crearUsuarioSiNoExiste("admin@inmotion.com", "admin123", "Administrador InMotion", "ADMIN");
+        crearUsuarioSiNoExiste("gerencia@inmotion.com", "gerencia123", "Gerencia General", "GERENTE");
+        crearUsuarioSiNoExiste("operaciones@inmotion.com", "operaciones123", "Atención a Clientes", "USER");
+    }
+
+    private void crearUsuarioSiNoExiste(String email, String password, String nombre, String rol) {
+        if (!usuarioRepository.existsByEmail(email)) {
+            Usuario u = new Usuario();
+            u.setEmail(email);
+            u.setPassword(passwordEncoder.encode(password));
+            u.setNombre(nombre);
+            u.setRol(rol);
+            u.setActivo(true);
+            usuarioRepository.save(u);
+            System.out.println("✅ Usuario institucional registrado: " + email);
+        }
+    }
+}

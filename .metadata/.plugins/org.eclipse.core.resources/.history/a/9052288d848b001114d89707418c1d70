@@ -1,0 +1,65 @@
+package com.inmotion.encuestas.controller;
+
+import com.inmotion.encuestas.model.Usuario;
+import com.inmotion.encuestas.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/usuarios")
+@RequiredArgsConstructor
+public class UsuarioController {
+
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    // Listar todos los usuarios autorizados
+    @GetMapping
+    public ResponseEntity<List<Usuario>> listarUsuarios() {
+        return ResponseEntity.ok(usuarioRepository.findAll());
+    }
+
+    // Registrar o autorizar a un nuevo usuario institucional
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            return ResponseEntity.badRequest().body("El correo ya está registrado en el sistema.");
+        }
+
+        // Encriptar la contraseña institucional antes de guardar
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        
+        if (usuario.getRol() == null || usuario.getRol().isEmpty()) {
+            usuario.setRol("USER");
+        }
+
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+        return ResponseEntity.ok(usuarioGuardado);
+    }
+
+    // Activar o desactivar el acceso a un usuario
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> cambiarEstado(@PathVariable Long id, @RequestParam boolean activo) {
+        return usuarioRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setActivo(activo);
+                    usuarioRepository.save(usuario);
+                    return ResponseEntity.ok().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Eliminar usuario
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        usuarioRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+}

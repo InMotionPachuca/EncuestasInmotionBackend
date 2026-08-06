@@ -51,7 +51,7 @@ public class EncuestaService {
         encuesta.setClienteTelefono(request.getTelefono());
         encuesta.setAsesor(request.getAsesor());
         encuesta.setSerie(request.getSerie());
-        encuesta.setSerie(request.getUnidad());
+        encuesta.setUnidad(request.getUnidad());
         encuesta.setMarca(marca);
 
         // --- CORRECCIÓN CRÍTICA: Mapear y guardar respuestas cuando vienen en el request (Caso QR) ---

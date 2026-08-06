@@ -22,6 +22,7 @@ public class EncuestaResponseDTO {
     private String clienteEmail;
     private String clienteTelefono;
     private String asesor;
+    private String unidad;
     private String marcaNombre;
     private Long marcaId;
     private List<RespuestaResponseDTO> respuestas;

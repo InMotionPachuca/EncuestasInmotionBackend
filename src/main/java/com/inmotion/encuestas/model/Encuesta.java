@@ -42,6 +42,7 @@ public class Encuesta {
     private String clienteTelefono;
     private String asesor;
     private String serie;
+    private String unidad;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "marca_id", nullable = false)

@@ -51,6 +51,7 @@ public class EncuestaService {
         encuesta.setClienteTelefono(request.getTelefono());
         encuesta.setAsesor(request.getAsesor());
         encuesta.setSerie(request.getSerie());
+        encuesta.setSerie(request.getUnidad());
         encuesta.setMarca(marca);
 
         // --- CORRECCIÓN CRÍTICA: Mapear y guardar respuestas cuando vienen en el request (Caso QR) ---
@@ -230,6 +231,7 @@ public class EncuestaService {
         dto.setClienteEmail(encuesta.getClienteEmail());
         dto.setClienteTelefono(encuesta.getClienteTelefono());
         dto.setAsesor(encuesta.getAsesor());
+        dto.setUnidad(encuesta.getUnidad());
         dto.setMarcaNombre(encuesta.getMarca().getNombre());
         dto.setMarcaId(encuesta.getMarca().getId());
         

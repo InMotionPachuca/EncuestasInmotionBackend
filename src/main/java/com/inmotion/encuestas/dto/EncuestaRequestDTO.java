@@ -27,6 +27,8 @@ public class EncuestaRequestDTO {
     private String asesor;
     
     private String serie;
+
+    private String unidad;
     
     @NotNull(message = "La marca es requerida")
     private Long marcaId;

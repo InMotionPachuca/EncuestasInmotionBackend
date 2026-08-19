@@ -2,7 +2,11 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
-			<item value="C:\Users\Agencia Toyota\Documents\EncuestasInMotion\encuestas-backend"/>
+			<item value="C:\Users\Agencia Toyota\Documents\InMotionEncuestas\Backend"/>
+			<item value="C:\Users\Agencia Toyota\Documents\InMotionEncuestas\Backend\encuestas-backend"/>
+			<item value="C:\Users\Agencia Toyota\Documents\InMotion\autoagencyInMotion"/>
+			<item value="C:\Users\Agencia Toyota\Documents\GitHub\encuestas-app\backend"/>
+			<item value="C:\Users\Agencia Toyota\Documents\InMotion\encuestas-app"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>

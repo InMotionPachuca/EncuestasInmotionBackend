@@ -3,6 +3,7 @@ package com.inmotion.encuestas.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,17 +34,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/encuestas/crear").permitAll()
-                        .requestMatchers("/api/encuestas/listar").permitAll()
-                        .requestMatchers("/api/encuestas/eliminar/**").permitAll()
-                        .requestMatchers("/api/encuestas/responder/**").permitAll()
-                        .requestMatchers("/api/encuestas/token/**").permitAll()
+                        // Rutas públicas y de autenticación
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/encuestas/**").permitAll()
+                        .requestMatchers("/api/marcas/**").permitAll()
                         .requestMatchers("/api/usuarios/cambiar-password").permitAll()
-                        .requestMatchers("/api/encuestas/estadisticas/**").permitAll()
-                        .requestMatchers("/ping").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/health").permitAll()
+                        .requestMatchers("/ping", "/", "/health").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        
+                        // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -54,7 +53,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Se agrega la URL del frontend desplegado en Render
         configuration.setAllowedOrigins(List.of(
             "http://localhost:4200", 
             "https://encuestasinmotionfrontend.onrender.com"

@@ -1,5 +1,0 @@
-package com.inmotion.encuestas.service;
-
-public class JwtService {
-
-}

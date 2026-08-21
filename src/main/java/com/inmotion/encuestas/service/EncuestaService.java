@@ -51,10 +51,10 @@ public class EncuestaService {
         encuesta.setClienteTelefono(request.getTelefono());
         encuesta.setAsesor(request.getAsesor());
         encuesta.setSerie(request.getSerie());
-        encuesta.setUnidad(request.getUnidad());
+        encuesta.setUnidad(request.getUnidad()); // Asignación corregida
         encuesta.setMarca(marca);
 
-        // --- CORRECCIÓN CRÍTICA: Mapear y guardar respuestas cuando vienen en el request (Caso QR) ---
+        // Mapear respuestas cuando vienen en el request (Caso QR)
         if (request.getRespuestas() != null && !request.getRespuestas().isEmpty()) {
             for (RespuestaRequestDTO r : request.getRespuestas()) {
                 Respuesta respuesta = new Respuesta();
@@ -117,24 +117,28 @@ public class EncuestaService {
         return mapToResponseDTO(saved);
     }
     
+    @Transactional(readOnly = true)
     public List<EncuestaResponseDTO> listarEncuestas() {
         return encuestaRepository.findAll().stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<EncuestaResponseDTO> listarEncuestasPorTipo(String tipo) {
         return encuestaRepository.findByTipoOrderByIdDesc(tipo).stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public EncuestaResponseDTO obtenerEncuestaPorToken(String token) {
         Encuesta encuesta = encuestaRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Encuesta no encontrada"));
         return mapToResponseDTO(encuesta);
     }
     
+    @Transactional(readOnly = true)
     public EstadisticasGeneralesDTO obtenerEstadisticasGenerales() {
         EstadisticasGeneralesDTO stats = new EstadisticasGeneralesDTO();
         

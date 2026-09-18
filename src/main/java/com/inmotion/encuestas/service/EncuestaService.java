@@ -43,7 +43,7 @@ public class EncuestaService {
         } else {
             encuesta.setEstado(Encuesta.EstadoEncuesta.ENVIADA);
             encuesta.setFechaEnvio(LocalDateTime.now());
-            encuesta.setFechaExpiracion(LocalDateTime.now().plusDays(7));
+            encuesta.setFechaExpiracion(LocalDateTime.now().plusDays(25));
         }
 
         encuesta.setClienteNombre(request.getNombre() + " " + request.getApellido());
